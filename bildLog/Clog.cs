@@ -87,7 +87,7 @@ namespace bildLog
         /// <param name="directory">Путь к директории с файлами</param>
         public static void DeleteOldFiles(string directory)
         {
-
+            //sdfsdfsdf
         }
 
         /// <summary>
