@@ -27,7 +27,6 @@ namespace bildLog
         /// Текущая дата, по которой находится файл с логами за этот день, иначе создается новый файл
         /// </summary>
         private DateTime _time = DateTime.Now;
-
         /// <summary>
         /// Файл с логами за сегодняшний день
         /// </summary>
@@ -126,6 +125,7 @@ namespace bildLog
         /// <returns></returns>
         public bool WriteMessage(string message)
         {
+            //!!!!!!!!!!!!!!!!!!!!!переписать на дополнение строки в существующий файл
             using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
             {
                 Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " : " + message);
@@ -145,7 +145,7 @@ namespace bildLog
         public bool WriteError(string error_message)
         {
             //!!!!!!!!!!!!!!!!!!!!!дописать переименование файла в filename_ERROR.txt
-
+            //!!!!!!!!!!!!!!!!!!!!!переписать на дополнение строки в существующий файл
             using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
             {
                 Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " ERROR : " + error_message);
