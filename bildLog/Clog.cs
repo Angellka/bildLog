@@ -12,26 +12,26 @@ namespace bildLog
         /// <summary>
         /// Транслировать записи в лог в консольное приложение
         /// </summary>
-        private bool writeToConsole;
+        private bool _writeToConsole;
         /// <summary>
         /// Путь к директории с логами
         /// </summary>
-        private string directory;
+        private string _directory;
         /// <summary>
         /// параметр, который показывает были ли за сегодня ошибки, что потом отобразиться в названии файла
         /// как дополнении к нему _ERROR
         /// в конструкторе, если нашли файл за сегодняшний день с поментой _ERROR isError = true
         /// </summary>
-        private bool isError;
+        private bool _isError;
         /// <summary>
         /// Текущая дата, по которой находится файл с логами за этот день, иначе создается новый файл
         /// </summary>
-        private DateTime time = DateTime.Now;
+        private DateTime _time = DateTime.Now;
 
         /// <summary>
         /// Файл с логами за сегодняшний день
         /// </summary>
-        private FileInfo file = null;
+        private FileInfo _file = null;
 
         /// <summary>
         /// Коснтруктор класса, указывается директория, куда будут сохраняться логи
@@ -41,38 +41,39 @@ namespace bildLog
         /// <param name="directory">Директория, куда будут сохраняться файлы с логами</param>        
         public CLog(string directory)
         {
-            this.directory = directory;
+            _writeToConsole = false;
+            _directory = directory;
+
+            if (_directory[_directory.Count() - 1] != '\\')
+                _directory += "\\";
+
+            //Если директории для логов  нет, то создаем ее
+            DirectoryInfo dir = new DirectoryInfo(_directory);
+            if (dir.Exists == false)
+                dir.Create();
 
             //Удаляем старые файлы с логами, возрастом более 30 дней
             this.DeleteOldLogs();
 
-            //Если директории для логов  нет, то создаем ее
-            DirectoryInfo dir = new DirectoryInfo(directory);
-            if (dir.Exists == false)
-                dir.Create();
-
-
             //Ищем файл с логами за сегодняшний день с пометкой _ERROR
-            string filename = directory + time.Day + time.Month + time.Year + "_ERROR.txt";            
-            file = new FileInfo(filename);
-            if (file.Exists == true)
+            string filename = _directory + _time.Day + "_" + _time.Month + "_" + _time.Year + "_ERROR.txt";            
+            _file = new FileInfo(filename);
+            if (_file.Exists == true)
             {
-                this.isError = true;
-                file.Open(FileMode.Open, FileAccess.Write);
+                _isError = true;                
             }
             //Если с пометкой _ERROR файл с логами не найден, то ищем обычный файл, иначе создаем новый
             else
             {
+                _isError = false;
                 filename = filename.Replace("_ERROR", "");
-                file = new FileInfo(filename);
-                file.Open(FileMode.OpenOrCreate, FileAccess.Write);
+                _file = new FileInfo(filename);
+                if (_file.Exists == false)
+                {
+                    using (File.Create(_file.FullName)) { }
+                }                              
             }
-        }
-
-        public CLog(string directory, bool writeToConsole)
-        {
-            CLog(directory);
-            this.writeToConsole = writeToConsole;
+            
         }
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace bildLog
         /// </summary>
         private void DeleteOldLogs()
         {
-            CLog.DeleteOldFiles(this.directory);
+            CLog.DeleteOldFiles(_directory);
         }
 
         /// <summary>
@@ -100,13 +101,22 @@ namespace bildLog
             string[] files = Directory.GetFiles(directory);
             foreach (string file in files)
             {                                
-                DateTime d1 = System.IO.File.GetCreationTime(file);
+                DateTime d1 = File.GetCreationTime(file);
                 DateTime d2 = DateTime.Now;
                 if ((d2 - d1).Days > 30)
                 {
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="boolean"></param>
+        public void SetWriteToConsole(bool boolean)
+        {
+            _writeToConsole = boolean;
         }
 
         /// <summary>
@@ -116,6 +126,14 @@ namespace bildLog
         /// <returns></returns>
         public bool WriteMessage(string message)
         {
+            using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " : " + message);
+                // Add some information to the file.
+                fs.Write(info, 0, info.Length);
+                
+            }
+
             return true;
         }
 
@@ -126,6 +144,14 @@ namespace bildLog
         /// <returns></returns>
         public bool WriteError(string error_message)
         {
+            //!!!!!!!!!!!!!!!!!!!!!дописать переименование файла в filename_ERROR.txt
+
+            using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " ERROR : " + error_message);
+                // Add some information to the file.
+                fs.Write(info, 0, info.Length);
+            }
             return true;
         }
     }
