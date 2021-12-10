@@ -10,6 +10,10 @@ namespace bildLog
     public class CLog
     {
         /// <summary>
+        /// Транслировать записи в лог в консольное приложение
+        /// </summary>
+        private bool writeToConsole;
+        /// <summary>
         /// Путь к директории с логами
         /// </summary>
         private string directory;
@@ -62,7 +66,13 @@ namespace bildLog
                 filename = filename.Replace("_ERROR", "");
                 file = new FileInfo(filename);
                 file.Open(FileMode.OpenOrCreate, FileAccess.Write);
-            }            
+            }
+        }
+
+        public CLog(string directory, bool writeToConsole)
+        {
+            CLog(directory);
+            this.writeToConsole = writeToConsole;
         }
 
         /// <summary>
@@ -86,8 +96,17 @@ namespace bildLog
         /// </summary>
         /// <param name="directory">Путь к директории с файлами</param>
         public static void DeleteOldFiles(string directory)
-        {
-            //sdfsdfsdf
+        {            
+            string[] files = Directory.GetFiles(directory);
+            foreach (string file in files)
+            {                                
+                DateTime d1 = System.IO.File.GetCreationTime(file);
+                DateTime d2 = DateTime.Now;
+                if ((d2 - d1).Days > 30)
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
         }
 
         /// <summary>
@@ -108,6 +127,6 @@ namespace bildLog
         public bool WriteError(string error_message)
         {
             return true;
-        }        
+        }
     }
 }
