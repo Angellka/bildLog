@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using bildLog;
+
 
 namespace ConsoleApplication2
 {
@@ -11,8 +11,14 @@ namespace ConsoleApplication2
     {
         static void Main(string[] args)
         {
-            CLog log = new CLog("c:\\logs");
+            CLog.CLog log = new CLog.CLog("c:\\test\\logs");
             log.WriteMessage("тест");
+
+            CCsv.CCsv csv = new CCsv.CCsv("c:\\test\\test.csv", ';');
+            csv.ReadDataToCSV();
+
+            csv.WriteDataToCSV("c:\\test\\test2.csv");
+
             Console.ReadKey();
         }
     }

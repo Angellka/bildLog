@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace bildLog
+namespace CLog
 {
     public class CLog
     {
@@ -76,7 +76,7 @@ namespace bildLog
         }
 
         /// <summary>
-        /// Деструктор, закрывает файл для текущих логов
+        /// 
         /// </summary>
         ~CLog()
         {
@@ -125,13 +125,11 @@ namespace bildLog
         /// <returns></returns>
         public bool WriteMessage(string message)
         {
-            //!!!!!!!!!!!!!!!!!!!!!переписать на дополнение строки в существующий файл
-            using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
+            //!!!!!!!!!!!!!!!!!!!!!переписать на дополнение строки в существующий файл            
+            using (StreamWriter sw = File.AppendText(_file.FullName))
             {
-                Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " : " + message);
-                // Add some information to the file.
-                fs.Write(info, 0, info.Length);
-                
+                sw.WriteLine(DateTime.Now.ToString() + " : " + message);
+                sw.Close();
             }
 
             return true;
@@ -144,15 +142,26 @@ namespace bildLog
         /// <returns></returns>
         public bool WriteError(string error_message)
         {
-            //!!!!!!!!!!!!!!!!!!!!!дописать переименование файла в filename_ERROR.txt
-            //!!!!!!!!!!!!!!!!!!!!!переписать на дополнение строки в существующий файл
-            using (FileStream fs = File.Open(_file.FullName, FileMode.Open, FileAccess.Write, FileShare.None))
+            _isError = true;         
+            using (StreamWriter sw = File.AppendText(_file.FullName))
             {
-                Byte[] info = new UTF8Encoding(true).GetBytes(DateTime.Now.ToString() + " ERROR : " + error_message);
-                // Add some information to the file.
-                fs.Write(info, 0, info.Length);
+                sw.WriteLine(DateTime.Now.ToString() + " ERROR : " + error_message);
+                sw.Close();
             }
+
+            //!!!!!!!!!!!!!!!!!!!!!дописать переименование файла в filename_ERROR.txt
+
+
             return true;
+        }
+
+        /// <summary>
+        /// Записывает в лог файл разделительную строку в виде четрочек
+        /// </summary>
+        /// <returns></returns>
+        public bool WriteDelimiter()
+        {
+            return this.WriteMessage("-----------------------------------");
         }
     }
 }
