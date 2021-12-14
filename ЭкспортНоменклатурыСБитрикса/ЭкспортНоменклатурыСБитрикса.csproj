@@ -54,6 +54,10 @@
       <Project>{b5ff9eaf-63fd-4ccd-b904-428b422e0ec8}</Project>
       <Name>CFtp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CLog\CLog.csproj">
+      <Project>{a1387765-0e30-45cc-958d-0619c06ada1f}</Project>
+      <Name>CLog</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSettings\CSettings.csproj">
       <Project>{cf83c01f-84f4-4e4b-bfe9-598af1425412}</Project>
       <Name>CSettings</Name>

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C9A7E2EC-D27A-44AF-914A-5ACC1BBE78CC}</ProjectGuid>
+    <ProjectGuid>{F8E49140-33DA-4798-BD6B-E3AEF2BEFFCE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoleApplication2</RootNamespace>
-    <AssemblyName>ConsoleApplication2</AssemblyName>
+    <RootNamespace>ЗагрузкаОстатковНаСайтПолная</RootNamespace>
+    <AssemblyName>ЗагрузкаОстатковНаСайтПолная</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -50,13 +50,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bildLog\CLog.csproj">
-      <Project>{a1387765-0e30-45cc-958d-0619c06ada1f}</Project>
-      <Name>CLog</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ccsv\CCsv.csproj">
       <Project>{53cc2a76-3a25-4d3d-aac3-355eeb50a259}</Project>
       <Name>CCsv</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cftp\CFtp.csproj">
+      <Project>{b5ff9eaf-63fd-4ccd-b904-428b422e0ec8}</Project>
+      <Name>CFtp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLog\CLog.csproj">
+      <Project>{a1387765-0e30-45cc-958d-0619c06ada1f}</Project>
+      <Name>CLog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSettings\CSettings.csproj">
+      <Project>{cf83c01f-84f4-4e4b-bfe9-598af1425412}</Project>
+      <Name>CSettings</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

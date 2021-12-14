@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CCsv
+namespace NCsv
 {
     public class CCsv
     {
@@ -27,13 +27,13 @@ namespace CCsv
         /// <summary>
         /// Заголовки данных файла. Первая строка файла
         /// </summary>
-        public Dictionary<int, string> headers = new Dictionary<int, string>();
+        public Dictionary<string, int> headers = new Dictionary<string, int>();
 
         /// <summary>
         /// Данные csv файла
         /// При этом ключ доступа к столбцу формируется из Dictionary headers
         /// </summary>         
-        public List<Dictionary<string, string>> data = new List<Dictionary<string, string>>();
+        public List<Dictionary<int, string>> data = new List<Dictionary<int, string>>();
 
         /// <summary>
         /// Конструктор класса
@@ -68,7 +68,7 @@ namespace CCsv
                 i = 0;
                 foreach (string splt in split)
                 {
-                    headers.Add(i, splt.Trim('\"')); // удаляем кавычки в заголовках
+                    headers.Add(splt.Trim('\"'), i); // удаляем кавычки в заголовках
                     i++;
                 }
 
@@ -76,13 +76,13 @@ namespace CCsv
                 //ключ доступа к ячейке строки данных формируем из headers                
                 for (i = 1; i < arStr.Length; i++)
                 {
-                    Dictionary<string, string> row = new Dictionary<string, string>();
+                    Dictionary<int, string> row = new Dictionary<int, string>();
                     s = arStr[i];
                     split = s.Split(_delimiter);
                     int j = 0;
                     foreach(string splt in split)
                     {                        
-                        row.Add(headers[j], splt.Trim('\"')); // удаляем кавычки в данных
+                        row.Add(j, splt.Trim('\"')); // удаляем кавычки в данных
                         j++;
                     }
                     data.Add(row);
@@ -107,18 +107,18 @@ namespace CCsv
 
             //записываем заголовки
             string h = "";
-            foreach (KeyValuePair<int, string> pair in headers)
+            foreach (KeyValuePair<string, int> pair in headers)
             {
-                h += pair.Value + _delimiter;
+                h += pair.Key + _delimiter;
             }
             SW.WriteLine(h);
 
             //записываем данные
             string d = "";
-            foreach (Dictionary<string, string> row in data)
+            foreach (Dictionary<int, string> row in data)
             {
                 d = "";
-                foreach(KeyValuePair<string, string> pair in row)
+                foreach(KeyValuePair<int, string> pair in row)
                 {
                     d += pair.Value + _delimiter;
                 }

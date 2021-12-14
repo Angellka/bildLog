@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CScanner
+namespace NScanner
 {
     class CVodoparad
     {

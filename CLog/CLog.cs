@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace CLog
+namespace NLog
 {
     public class CLog
     {
