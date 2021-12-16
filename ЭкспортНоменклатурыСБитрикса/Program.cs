@@ -13,9 +13,13 @@ namespace ЭкспортНоменклатурыСБитрикса
     {
         static void Main(string[] args)
         {
+            CLog log = new CLog(AppDomain.CurrentDomain.BaseDirectory + "log\\");
+            log.WriteDelimiter();
+
+
             CSettings settings = null;
             CFtp ftp = null;
-            CLog log = new CLog(AppDomain.CurrentDomain.BaseDirectory + "log\\");
+            
 
             try
             {
@@ -39,12 +43,10 @@ namespace ЭкспортНоменклатурыСБитрикса
             catch (Exception exc)
             {
                 log.WriteError(exc.Message);
-                log.WriteDelimiter();
                 return;
             }
 
             //-------------------------------------------
-            log.WriteDelimiter();
         }
     }
 }

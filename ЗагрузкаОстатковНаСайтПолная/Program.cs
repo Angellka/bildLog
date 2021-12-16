@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Xml;
 
 using NFtp;
 using NCsv;
 using NLog;
 using NSettings;
-using System.IO;
-using System.Xml;
+
 
 namespace ЗагрузкаОстатковНаСайтПолная
 {
@@ -17,6 +18,8 @@ namespace ЗагрузкаОстатковНаСайтПолная
     {
         static void Main(string[] args)
         {
+            CLog log = new CLog(AppDomain.CurrentDomain.BaseDirectory + "log\\");
+            log.WriteDelimiter();
             bool b = false;
             CSettings settings = null;
             CFtp ftp = null;
@@ -28,7 +31,6 @@ namespace ЗагрузкаОстатковНаСайтПолная
 
 
 
-            CLog log = new CLog(AppDomain.CurrentDomain.BaseDirectory + "log\\");
             try
             {
                 //-------------------------------------------
@@ -92,19 +94,19 @@ namespace ЗагрузкаОстатковНаСайтПолная
 
                                     //-------------------------------------------
                                     log.WriteMessage("Загружаю файл csv водопарада " + settings.local_directory_data + settings.local_vodoparad_csv);
-                                    vodoparad = new CCsv(settings.local_directory_data + settings.local_vodoparad_csv, ';');
+                                    vodoparad = new CCsv(settings.local_directory_data + settings.local_vodoparad_csv, ';', Encoding.UTF8);
                                     vodoparad.ReadDataToCSV();
                                     log.WriteMessage("ok");
 
                                     //-------------------------------------------
                                     log.WriteMessage("Загружаю файл csv с сайта " + settings.local_directory_data + settings.local_bitrix_filename);
-                                    bitrix = new CCsv(settings.local_directory_data + settings.local_bitrix_filename, ';');
+                                    bitrix = new CCsv(settings.local_directory_data + settings.local_bitrix_filename, ';', Encoding.UTF8);
                                     bitrix.ReadDataToCSV();
                                     log.WriteMessage("ok");
 
                                     //-------------------------------------------
                                     log.WriteMessage("Формирую файл csv с остатками для загрузки на фтп");
-                                    for_save = new CCsv(settings.local_directory_data + settings.local_ostatki_full_filename, ';');
+                                    for_save = new CCsv(settings.local_directory_data + settings.local_ostatki_full_filename, ';', Encoding.UTF8);
 
                                     //формируем заголовок
                                     Dictionary<string, int> headers = new Dictionary<string, int>();
@@ -143,12 +145,10 @@ namespace ЗагрузкаОстатковНаСайтПолная
             catch (Exception exc)
             {
                 log.WriteError(exc.Message);
-                log.WriteDelimiter();
                 return;
             }
 
             //-------------------------------------------
-            log.WriteDelimiter();
         }
     }
 }

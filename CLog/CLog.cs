@@ -131,6 +131,7 @@ namespace NLog
                 sw.WriteLine(DateTime.Now.ToString() + " : " + message);
                 sw.Close();
             }
+            Console.WriteLine(message);
 
             return true;
         }

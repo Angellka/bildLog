@@ -9,6 +9,7 @@ namespace NCsv
 {
     public class CCsv
     {
+        Encoding _encoding;
         /// <summary>
         /// Полный путь к файлу csv
         /// </summary>
@@ -40,60 +41,55 @@ namespace NCsv
         /// </summary>
         /// <param name="fileFullName">Полный путь к файлу csv</param>
         /// <param name="delimiter">Символ разделителя между значениями в файле</param>
-        public CCsv(string fileFullName, char delimiter)
+        public CCsv(string fileFullName, char delimiter, Encoding encoding)
         {
             _filename = fileFullName;
             _delimiter = delimiter;
+            _encoding = encoding;
         }
 
         /// <summary>
         /// Читает содержимое файла, указанного в конструкторе и записывает заголовки в headers, а данные в data
         /// </summary>
-        public bool ReadDataToCSV()
+        public void ReadDataToCSV()
         {
-            try
+            int i;
+            //читаем файл
+            string[] arStr = File.ReadAllLines(_filename, _encoding);
+            if (arStr == null || arStr.Count() == 0)
             {
-                int i;
-                //читаем файл
-                string[] arStr = File.ReadAllLines(_filename);
-                if (arStr == null || arStr.Count() == 0)
-                {
-                    _error = "Функция CCsv.ReadDataToCsv() Файл не содержит данных";
-                    return false;
-                }
+                throw new Exception("Функция CCsv.ReadDataToCsv() Файл не содержит данных");
+            }
 
-                //читаем заголовок и заносим его в headers
-                string s = arStr[0];
-                string[] split = s.Split(_delimiter);
-                i = 0;
+            //читаем заголовок и заносим его в headers
+            string s = arStr[0];
+            string[] split = s.Split(_delimiter);
+            i = 0;
+            foreach (string splt in split)
+            {
+                headers.Add(splt.Trim('\"'), i); // удаляем кавычки в заголовках
+                i++;
+            }
+
+            //читаем строки csv файла и заносим их в data
+            //ключ доступа к ячейке строки данных формируем из headers                
+            for (i = 1; i < arStr.Length; i++)
+            {
+                Dictionary<int, string> row = new Dictionary<int, string>();
+                s = arStr[i];
+                split = s.Split(_delimiter);
+                int j = 0;
                 foreach (string splt in split)
                 {
-                    headers.Add(splt.Trim('\"'), i); // удаляем кавычки в заголовках
-                    i++;
+                    row.Add(j, splt.Trim('\"')); // удаляем кавычки в данных
+                    j++;
                 }
+                //Добавляем пустое значение в конец каждого словаря на случай, если в файле в конце строки не стоит знак разделителя
+                //это костыль, надо попросить Юрия Андреевича поставить точки с запятой в столбец Цена акций, где нет значений
+                row.Add(j, "");
 
-                //читаем строки csv файла и заносим их в data
-                //ключ доступа к ячейке строки данных формируем из headers                
-                for (i = 1; i < arStr.Length; i++)
-                {
-                    Dictionary<int, string> row = new Dictionary<int, string>();
-                    s = arStr[i];
-                    split = s.Split(_delimiter);
-                    int j = 0;
-                    foreach(string splt in split)
-                    {                        
-                        row.Add(j, splt.Trim('\"')); // удаляем кавычки в данных
-                        j++;
-                    }
-                    data.Add(row);
-                }
+                data.Add(row);
             }
-            catch (Exception exc)
-            {
-                _error = "EXCEPTION. Функция CCsv.ReadDataToCsv(): " + exc.Message;
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
