@@ -29,13 +29,11 @@ namespace ЗагрузкаЦенНаСайт
 
             
 
-            //try
+            try
             {
                 //-------------------------------------------                
                 log.WriteMessage("Десериализирую настройки");
                 //settings = CSettings.Deserialize();
-
-
                 settings = new CSettings();
                 settings.local_directory_data = "C:\\bild\\ИнтернетМагазин\\data\\";
                 settings.local_directory_bild_price = "C:\\bild\\ИнтернетМагазин\\Цены\\";
@@ -43,11 +41,7 @@ namespace ЗагрузкаЦенНаСайт
                 settings.local_bitrix_filename = "bitrix_data2.csv";
                 settings.local_price_filename = "price2.csv";
                 settings.local_brands_filename = "brands.txt";
-
-
                 log.WriteMessage("ok");
-
-              
 
                 //-------------------------------------------
                 bool b = false;
@@ -133,7 +127,7 @@ namespace ЗагрузкаЦенНаСайт
                         log.WriteMessage("-- формирую заголовки");                        
                         for_save.headers.Add("ID элемента", 0);
                         for_save.headers.Add("Розничная цена", 1);
-                        for_save.headers.Add("Цена со скидкой", 2);
+                        for_save.headers.Add("Цена со скидкой", 2);                        
 
                         //формируем данные
                         log.WriteMessage("-- формирую данные");
@@ -267,6 +261,7 @@ namespace ЗагрузкаЦенНаСайт
                                 for_save.data.Add(d);
                             }
                         }//конец для каждой позиции с сайта
+                        //конец формирования файла для записи
                         log.WriteMessage("ok");
 
                         //-------------------------------------------
@@ -274,15 +269,16 @@ namespace ЗагрузкаЦенНаСайт
                         for_save.WriteDataToCSV();
                         log.WriteMessage("ok");
                     }//конец если нашел файл csv
-                }
+                }//конец поиска файла csv
 
                 //-------------------------------------------
             }
-            /*catch (Exception exc)
+            catch (Exception exc)
             {
-                log.WriteError(exc.Message);                
+                log.WriteError(exc.Message);
+                Console.WriteLine();
                 return;
-            }*/
+            }
 
             //-------------------------------------------
         }
