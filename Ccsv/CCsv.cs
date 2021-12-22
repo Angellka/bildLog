@@ -49,6 +49,24 @@ namespace NCsv
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetFileFullName()
+        {
+            return _filename;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetFileName()
+        {
+            return (new FileInfo(_filename)).Name;
+        }
+
+        /// <summary>
         /// Читает содержимое файла, указанного в конструкторе и записывает заголовки в headers, а данные в data
         /// </summary>
         public void ReadDataToCSV()

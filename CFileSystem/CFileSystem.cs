@@ -43,9 +43,26 @@ namespace NFileSystem
         /// </summary>
         /// <param name="f_out"></param>
         /// <param name="f_to"></param>
-        public static void RemoveFile(FileInfo f_out, FileInfo f_to)
-        {
-
+        public static void RemoveFile(string f_out, string f_to)
+        {            
+            if ((new FileInfo(f_to)).Exists) File.Delete(f_to);
+            File.Move(f_out, f_to);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="f_out"></param>
+        /// <param name="f_to"></param>
+        public static void RemoveFile(FileInfo f_out, FileInfo f_to)
+        {            
+            CFileSystem.RemoveFile(f_out.FullName, f_to.FullName);
+        }   
+        
+        public static void CreateDirectoryIfPossible(string directory)
+        {
+            if (Directory.Exists(directory) == false)
+                Directory.CreateDirectory(directory);
+        }           
     }
 }

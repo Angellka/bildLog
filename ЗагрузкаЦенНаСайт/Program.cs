@@ -9,6 +9,7 @@ using NFtp;
 using NCsv;
 using NLog;
 using NSettings;
+using NFileSystem;
 
 namespace ЗагрузкаЦенНаСайт
 {
@@ -16,7 +17,10 @@ namespace ЗагрузкаЦенНаСайт
     {
         static void Main(string[] args)
         {
-            CLog log = new CLog(AppDomain.CurrentDomain.BaseDirectory + "log\\");
+            string directory_backup = AppDomain.CurrentDomain.BaseDirectory + "backup\\";
+            string directory_logs = AppDomain.CurrentDomain.BaseDirectory + "log\\";
+
+            CLog log = new CLog(directory_logs);
             log.WriteDelimiter();
 
             CSettings settings = null;
@@ -30,16 +34,18 @@ namespace ЗагрузкаЦенНаСайт
             {
                 //-------------------------------------------                
                 log.WriteMessage("Десериализирую настройки");
-                //settings = CSettings.Deserialize();
-                settings = new CSettings();
+                settings = CSettings.Deserialize();
+                /*settings = new CSettings();
                 settings.local_directory_data = "C:\\bild\\ИнтернетМагазин\\data\\";
                 settings.local_directory_bild_price = "C:\\bild\\ИнтернетМагазин\\Цены\\";
                 settings.local_vodoparad_csv = "vodoparad.csv";
                 settings.local_bitrix_filename = "bitrix_data2.csv";
                 settings.local_price_filename = "price2.csv";
-                settings.local_brands_filename = "brands.txt";
+                settings.local_brands_filename = "brands.txt";*/
                 log.WriteMessage("ok");
 
+                FileInfo f_csv = null;
+                FileInfo f_end = null;
                 //-------------------------------------------
                 bool b = false;
                 log.WriteMessage("Ищу файл .end");
@@ -49,7 +55,8 @@ namespace ЗагрузкаЦенНаСайт
                     FileInfo fileInfo = new FileInfo(file);
                     if (fileInfo.Extension.ToUpper() == ".END")
                     {
-                        log.WriteMessage("Нашел " + fileInfo.Name);
+                        f_end = fileInfo;
+                        log.WriteMessage("Нашел " + fileInfo.Name);                        
                         b = true;
                         break;                    
                     }
@@ -66,6 +73,7 @@ namespace ЗагрузкаЦенНаСайт
                         if (fileInfo.Extension.ToUpper() == ".CSV")
                         {
                             //-------------------------------------------
+                            f_csv = fileInfo;
                             log.WriteMessage("Нашел " + fileInfo.Name);
                             log.WriteMessage("Загружаю оттуда цены билда " + fileInfo.FullName);
                             bild = new CCsv(fileInfo.FullName, ';', Encoding.GetEncoding(1251));
@@ -118,16 +126,15 @@ namespace ЗагрузкаЦенНаСайт
                             bool find_brand = false;
                             bool null_code = true;
                             bool null_vodoparad = true;
+
                             //-------------------------------------------
                             log.WriteMessage("Формирую файл csv с ценами для сайта");
                             for_save = new CCsv(settings.local_directory_data + settings.local_price_filename, ';', Encoding.UTF8);
-
                             //формируем заголовки
                             log.WriteMessage("-- формирую заголовки");
                             for_save.headers.Add("ID элемента", 0);
                             for_save.headers.Add("Розничная цена", 1);
                             for_save.headers.Add("Цена со скидкой", 2);
-
                             //формируем данные
                             log.WriteMessage("-- формирую данные");
                             //для каждой позиции с сайта
@@ -151,8 +158,10 @@ namespace ЗагрузкаЦенНаСайт
                                             break;
                                         }
                                     }
-                                    if (find_brand != true)
+                                    //если не прошел по бренду
+                                    if (find_brand == false)
                                     {
+                                        //ставлю цену 0
                                         log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Не прошел по бренду. Ставлю цену 0. Бренд: " + row_bitrix[3]);
                                         Dictionary<int, string> d = new Dictionary<int, string>();
                                         d.Add(0, row_bitrix[0]);
@@ -161,7 +170,6 @@ namespace ЗагрузкаЦенНаСайт
                                         for_save.data.Add(d);
                                         continue;
                                     }
-
 
                                     //если есть код товара
                                     if (row_bitrix[4] != "")
@@ -267,6 +275,35 @@ namespace ЗагрузкаЦенНаСайт
                             log.WriteMessage("Записываю файл csv с ценами для сайта " + settings.local_directory_data + settings.local_price_filename);
                             for_save.WriteDataToCSV();
                             log.WriteMessage("ok");
+                            //-------------------------------------------
+
+                            log.WriteMessage("Подключаюсь к фтп " + settings.ftp_ip);
+                            ftp = new CFtp(settings.ftp_ip, settings.ftp_login, settings.ftp_password);
+                            log.WriteMessage("ok");
+
+                            //-------------------------------------------
+                            log.WriteMessage("Копирую файл с ценами на фтп");
+                            log.WriteMessage("Отсюда");
+                            log.WriteMessage(for_save.GetFileFullName());
+                            log.WriteMessage("Сюда");
+                            log.WriteMessage(settings.ftp_directory + settings.ftp_price_filename);
+                            ftp.UploadFile(for_save.GetFileFullName(), settings.ftp_directory + settings.ftp_price_filename);
+                            log.WriteMessage("ok");
+
+                            //-------------------------------------------
+                            log.WriteMessage("Перемещаю рабочие файлы с ценами в папку backup");                            
+                            CFileSystem.CreateDirectoryIfPossible(directory_backup);
+                            log.WriteMessage(f_csv.FullName);
+                            CFileSystem.RemoveFile(f_csv.FullName, directory_backup + f_csv.Name);
+                            log.WriteMessage("ok");
+                            log.WriteMessage(f_end.FullName);
+                            CFileSystem.RemoveFile(f_end.FullName, directory_backup + f_end.Name);
+                            log.WriteMessage("ok");
+                            log.WriteMessage(for_save.GetFileFullName());
+                            log.WriteMessage("..и переименовываю price.csv в формат даты");
+                            CFileSystem.RemoveFile(for_save.GetFileFullName(), directory_backup + "price_" + f_csv.Name);
+                            log.WriteMessage("ok");
+
                         }//конец если нашел файл csv
                     }//конец поиска файла csv
                 }//если файл end найден
@@ -280,9 +317,10 @@ namespace ЗагрузкаЦенНаСайт
             {
                 log.WriteError(exc.Message);
                 Console.WriteLine();
+                Console.ReadLine();
                 return;
             }
-
+            //zapromo.ru
             //-------------------------------------------
         }
     }
