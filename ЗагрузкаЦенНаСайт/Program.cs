@@ -153,6 +153,7 @@ namespace ЗагрузкаЦенНаСайт
                                     //если для позиции стоит статус "Пометка на удаление - Да"
                                     if (row_bitrix[8] == "Да")
                                     {
+                                        //то ставим цену 0
                                         log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Пометка на удаление - Да. Ставлю цену ноль");
                                         Dictionary<int, string> d = new Dictionary<int, string>();
                                         d.Add(0, row_bitrix[0]);
