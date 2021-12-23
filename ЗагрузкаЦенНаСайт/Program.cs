@@ -115,6 +115,7 @@ namespace ЗагрузкаЦенНаСайт
                             // 5 - url водопарада
                             // 6 - Розничная цена
                             // 7 - Цена товара со скидкой
+                            // 8 - Пометка на удаление
 
                             //-------------------------------------------
                             log.WriteMessage("Загружаю файл с допустимыми брендами " + settings.local_directory_data + settings.local_brands_filename);
@@ -145,10 +146,22 @@ namespace ЗагрузкаЦенНаСайт
                                 find_brand = false;
                                 null_code = true;
                                 null_vodoparad = true;
-                                Dictionary<int, string> row_for_save = new Dictionary<int, string>();
-                                //если для позиции стоит статус "обновлять цены"
+                                Dictionary<int, string> row_for_save = new Dictionary<int, string>();                                
+                                //если для позиции стоит статус "Обновлять цены - Да"
                                 if (row_bitrix[1] == "Да")
                                 {
+                                    //если для позиции стоит статус "Пометка на удаление - Да"
+                                    if (row_bitrix[8] == "Да")
+                                    {
+                                        log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Пометка на удаление - Да. Ставлю цену ноль");
+                                        Dictionary<int, string> d = new Dictionary<int, string>();
+                                        d.Add(0, row_bitrix[0]);
+                                        d.Add(1, "0");
+                                        d.Add(2, "");
+                                        for_save.data.Add(d);
+                                        continue;
+                                    }
+                                        
                                     //проверяем на допуск по бренду
                                     foreach (string brand in brands)
                                     {
