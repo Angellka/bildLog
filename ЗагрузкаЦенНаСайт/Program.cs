@@ -88,6 +88,8 @@ namespace ЗагрузкаЦенНаСайт
                             // 5 - ЦенаР
                             // 6 - ЦенаАкц
                             // 7 - ВидАкции
+                            // 8 - Позиция на Я
+                            // 9 - Артикул
 
                             //-------------------------------------------
                             log.WriteMessage("Загружаю файл csv водопарада " + settings.local_directory_data + settings.local_vodoparad_csv);
@@ -146,7 +148,32 @@ namespace ЗагрузкаЦенНаСайт
                                 find_brand = false;
                                 null_code = true;
                                 null_vodoparad = true;
-                                Dictionary<int, string> row_for_save = new Dictionary<int, string>();                                
+                                Dictionary<int, string> row_for_save = new Dictionary<int, string>();
+
+                                //----------------------------------------------------------------------------------------
+                                //проверяем на позицию на Я
+                                //для всех позиций с файла цен билда
+                                foreach (Dictionary<int, string> row_bild in bild.data)
+                                {
+                                    //если код товара совпадает
+                                    if (row_bitrix[4] == row_bild[0])
+                                    {
+                                        //и позиция на я
+                                        if (row_bild[8] == "я")
+                                        {
+                                            //то ставим цену 0
+                                            log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Позиция на Я. Ставлю цену ноль. Код товара: " + row_bitrix[4]);
+                                            Dictionary<int, string> d = new Dictionary<int, string>();
+                                            d.Add(0, row_bitrix[0]);
+                                            d.Add(1, "0");
+                                            d.Add(2, "");
+                                            for_save.data.Add(d);
+                                            continue;
+                                        }                                           
+                                    }
+                                }
+                                //----------------------------------------------------------------------------------------
+
                                 //если для позиции стоит статус "Обновлять цены - Да"
                                 if (row_bitrix[1] == "Да")
                                 {
