@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ЗагрузкаОстат�
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ЗагрузкаЦенНаСайт", "ЗагрузкаЦенНаСайт\ЗагрузкаЦенНаСайт.csproj", "{19094190-8742-4C0E-B099-48F028BEDA69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CParser", "CParser\CParser.csproj", "{323A59F1-1592-49FF-AD00-38F9557A3133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{19094190-8742-4C0E-B099-48F028BEDA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19094190-8742-4C0E-B099-48F028BEDA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19094190-8742-4C0E-B099-48F028BEDA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{323A59F1-1592-49FF-AD00-38F9557A3133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323A59F1-1592-49FF-AD00-38F9557A3133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323A59F1-1592-49FF-AD00-38F9557A3133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323A59F1-1592-49FF-AD00-38F9557A3133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
