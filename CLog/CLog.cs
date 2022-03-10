@@ -149,7 +149,7 @@ namespace NLog
                 sw.WriteLine(DateTime.Now.ToString() + " ERROR : " + error_message);
                 sw.Close();
             }
-
+            Console.WriteLine(error_message);
             //!!!!!!!!!!!!!!!!!!!!!дописать переименование файла в filename_ERROR.txt
 
 

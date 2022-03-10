@@ -54,6 +54,10 @@
       <Project>{53cc2a76-3a25-4d3d-aac3-355eeb50a259}</Project>
       <Name>CCsv</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CFileSystem\CFileSystem.csproj">
+      <Project>{8ea8e8b3-7703-47cc-8012-d3e1523235a9}</Project>
+      <Name>CFileSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cftp\CFtp.csproj">
       <Project>{b5ff9eaf-63fd-4ccd-b904-428b422e0ec8}</Project>
       <Name>CFtp</Name>
