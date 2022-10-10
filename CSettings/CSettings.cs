@@ -46,6 +46,8 @@ namespace NSettings
 
         public string local_brands_filename { get; set; }
 
+        public string chrome_path { get; set; }
+
         /// <summary>
         /// Десериализация настроек из файла, путь к которому указан был в конструкторе
         /// </summary>

@@ -1,16 +1,37 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CParser
+namespace NParser
 {
-    class CCatalog
+    [Serializable]
+    public abstract class CCatalog
     {
-        CCatalog()
+        public string url;
+        public List<CChapter> chapters;
+        public string parce_error = "";
+
+        public CCatalog() { }
+        public CCatalog(string url)
         {
-            
+            this.url = url;
+            chapters = new List<CChapter>();
         }
+
+        public List<CGood> Goods()
+        {
+            List<CGood> goods = new List<CGood>();
+            if (chapters != null)
+                foreach (CChapter chapter in chapters)
+                {
+                    goods.AddRange(chapter.goods);
+                }
+            return goods;
+        }
+
+        public abstract void Parce(WebDriver driver);
     }
 }

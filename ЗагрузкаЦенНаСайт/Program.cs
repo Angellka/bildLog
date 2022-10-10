@@ -30,7 +30,7 @@ namespace ЗагрузкаЦенНаСайт
             CCsv for_save = null;
             CCsv bitrix = null;
 
-            try
+            //try
             {
                 //-------------------------------------------                
                 log.WriteMessage("Десериализирую настройки");
@@ -138,6 +138,11 @@ namespace ЗагрузкаЦенНаСайт
                             for_save.headers.Add("ID элемента", 0);
                             for_save.headers.Add("Розничная цена", 1);
                             for_save.headers.Add("Цена со скидкой", 2);
+                            for_save.headers.Add("ЦенаА", 3);
+                            for_save.headers.Add("ЦенаБ", 4);
+                            for_save.headers.Add("ЦенаВ", 5);
+                            for_save.headers.Add("Цена со скидкой(служебное)", 6);
+                            for_save.headers.Add("Распродажа", 7);
                             //формируем данные
                             log.WriteMessage("-- формирую данные");
                             //для каждой позиции с сайта
@@ -169,7 +174,12 @@ namespace ЗагрузкаЦенНаСайт
                                             Dictionary<int, string> d = new Dictionary<int, string>();
                                             d.Add(0, row_bitrix[0]);
                                             d.Add(1, "0");
-                                            d.Add(2, "");
+                                            d.Add(2, "0");
+                                            d.Add(3, "0");
+                                            d.Add(4, "0");
+                                            d.Add(5, "0");
+                                            d.Add(6, "");
+                                            d.Add(7, "Нет");
                                             for_save.data.Add(d);
                                             bYa = true;
                                             continue;
@@ -191,7 +201,12 @@ namespace ЗагрузкаЦенНаСайт
                                         Dictionary<int, string> d = new Dictionary<int, string>();
                                         d.Add(0, row_bitrix[0]);
                                         d.Add(1, "0");
-                                        d.Add(2, "");
+                                        d.Add(2, "0");
+                                        d.Add(3, "0");
+                                        d.Add(4, "0");
+                                        d.Add(5, "0");
+                                        d.Add(6, "");
+                                        d.Add(7, "Нет");
                                         for_save.data.Add(d);
                                         continue;
                                     }
@@ -213,7 +228,12 @@ namespace ЗагрузкаЦенНаСайт
                                         Dictionary<int, string> d = new Dictionary<int, string>();
                                         d.Add(0, row_bitrix[0]);
                                         d.Add(1, "0");
-                                        d.Add(2, "");
+                                        d.Add(2, "0");
+                                        d.Add(3, "0");
+                                        d.Add(4, "0");
+                                        d.Add(5, "0");
+                                        d.Add(6, "");
+                                        d.Add(7, "Нет");
                                         for_save.data.Add(d);
                                         continue;
                                     }
@@ -230,50 +250,91 @@ namespace ЗагрузкаЦенНаСайт
                                             {
                                                 find_code = true;
                                                 //если цены по акции нет
-                                                //if (row_bild[6].Replace(',', '.') == "")
-                                                //{
-                                                //пишем ценуВ
-                                                /*Dictionary<int, string> d = new Dictionary<int, string>();
-                                                d.Add(0, row_bitrix[0]);
-                                                d.Add(1, row_bild[3].Replace(',', '.'));
-                                                d.Add(2, "");
-                                                for_save.data.Add(d);
-                                                log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены без акции: ЦенаВ " + row_bild[3].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);*/
-
-                                                //пишем ценуР
-                                                Dictionary<int, string> d = new Dictionary<int, string>();
-                                                d.Add(0, row_bitrix[0]);
-                                                d.Add(1, row_bild[5].Replace(',', '.'));
-                                                d.Add(2, "");
-                                                for_save.data.Add(d);
-                                                log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены без акции: ЦенаР " + row_bild[5].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
-                                                //}
-                                                //если есть цена акции
-                                                /*else
+                                                if (row_bild[6].Replace(',', '.') == "")
                                                 {
-                                                    //если вид акции - Распродажа
+                                                    //пишем ценуВ
+                                                    /*Dictionary<int, string> d = new Dictionary<int, string>();
+                                                    d.Add(0, row_bitrix[0]);
+                                                    d.Add(1, row_bild[3].Replace(',', '.'));
+                                                    d.Add(2, "");
+                                                    for_save.data.Add(d);
+                                                    log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены без акции: ЦенаВ " + row_bild[3].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);*/
+
+                                                    //пишем ценуР
+                                                    Dictionary<int, string> d = new Dictionary<int, string>();
+
+                                                    //ID элемента
+                                                    d.Add(0, row_bitrix[0]);
+                                                    //ЦенаР
+                                                    //----------------------------------------------------------------------- СКИДКА НА ВСЕ 12%
+
+                                                    d.Add(1, row_bild[5].Replace(',', '.'));
+                                                    //ЦенаАкц
+                                                    //double price = Convert.ToDouble(row_bild[5].Replace('.', ','));
+                                                    //price *= 0.88;
+                                                    //price = Math.Round(price);
+                                                    //d.Add(2, Convert.ToString(price).Replace(',', '.'));
+                                                    d.Add(2, "0");
+                                                    //----------------------------------------------------------------------- СКИДКА НА ВСЕ 12%
+                                                    //ЦенаА
+                                                    d.Add(3, row_bild[1].Replace(',', '.'));
+                                                    //ЦенаБ
+                                                    d.Add(4, row_bild[2].Replace(',', '.'));
+                                                    //ЦенаВ
+                                                    d.Add(5, row_bild[3].Replace(',', '.'));
+                                                    //цена со скидкой(служебное)
+                                                    d.Add(6, "");
+                                                    //Распродажа
+                                                    d.Add(7, "Нет");
+                                                    for_save.data.Add(d);
+                                                    log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены без акции: ЦенаР " + row_bild[5].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
+                                                    /*
+                                                    d.Add(0, row_bitrix[0]);
+                                                    d.Add(1, row_bild[5].Replace(',', '.'));
+                                                    double percent = 0.12;
+                                                    double price2 = Convert.ToDouble(row_bild[5].Replace('.', ','));
+                                                    price2 *= 1 - percent;
+                                                    price2 = Math.Ceiling(price2);
+                                                    d.Add(2, Convert.ToString(price2));
+                                                    for_save.data.Add(d);
+                                                    log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Общая акция! ЦенаР " + row_bild[5].Replace(',', '.') + "р. Цена по акции: " + price2 + "р. Код товара: " + row_bitrix[4]);
+                                                    */
+                                                }
+                                                //если есть цена акции
+                                                else
+                                                {
+                                                    //
+                                                    //записываем новые цены 
+                                                    Dictionary<int, string> d = new Dictionary<int, string>();
+
+                                                    //ID элемента
+                                                    d.Add(0, row_bitrix[0]);
+                                                    //ЦенаР
+                                                    d.Add(1, row_bild[5].Replace(',', '.'));
+                                                    //ЦенаАкц
+                                                    d.Add(2, row_bild[6].Replace(',', '.'));
+                                                    //ЦенаА
+                                                    d.Add(3, row_bild[1].Replace(',', '.'));
+                                                    //ЦенаБ
+                                                    d.Add(4, row_bild[2].Replace(',', '.'));
+                                                    //ЦенаВ
+                                                    d.Add(5, row_bild[3].Replace(',', '.'));
+                                                    //цена со скидкой(служебное)
+                                                    d.Add(6, row_bild[6].Replace(',', '.'));
+                                                    //Распродажа
                                                     if (row_bild[7] == "Распродажа")
                                                     {
-                                                        //то ставим ценуВ
-                                                        Dictionary<int, string> d = new Dictionary<int, string>();
-                                                        d.Add(0, row_bitrix[0]);
-                                                        d.Add(1, row_bild[3].Replace(',', '.'));
-                                                        d.Add(2, "");
-                                                        for_save.data.Add(d);
-                                                        log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Вид акции - Распродажа. Ставлю ЦенуВ: ЦенаВ " + row_bild[3].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
+                                                        d.Add(7, "Да");
+                                                        log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены с Распродажей: ЦенаР " + row_bild[5].Replace(',', '.') + "р. ЦенаАкц " + row_bild[6].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
                                                     }
-                                                    //иначе ставим цену акции
                                                     else
                                                     {
-                                                        //записываем новые цены 
-                                                        Dictionary<int, string> d = new Dictionary<int, string>();
-                                                        d.Add(0, row_bitrix[0]);
-                                                        d.Add(1, row_bild[5].Replace(',', '.'));
-                                                        d.Add(2, row_bild[6].Replace(',', '.'));
-                                                        for_save.data.Add(d);
-                                                        log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены с акцией: ЦенаР " + row_bild[5].Replace(',', '.') + "р. ЦенаАкц " + row_bild[6].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
+                                                        d.Add(7, "Нет");
+                                                        log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новые цены с Акцией: ЦенаР " + row_bild[5].Replace(',', '.') + "р. ЦенаАкц " + row_bild[6].Replace(',', '.') + "р. Код товара: " + row_bitrix[4]);
                                                     }
-                                                }*/
+                                                    for_save.data.Add(d);
+                                                    
+                                                }
                                                 break;
                                             }//конец если код товара совпадает                                        
                                         }//конец для всех позиций с файла цен билда
@@ -281,7 +342,7 @@ namespace ЗагрузкаЦенНаСайт
                                     //если нет кода товара, но есть url водопарада
                                     else if (row_bitrix[5] != "")
                                     {
-                                        null_vodoparad = false;
+                                        /*null_vodoparad = false;
                                         //для всех позиций с файла цен водопарада
                                         foreach (Dictionary<int, string> row_vodoparad in vodoparad.data)
                                         {
@@ -293,12 +354,13 @@ namespace ЗагрузкаЦенНаСайт
                                                 Dictionary<int, string> d = new Dictionary<int, string>();
                                                 d.Add(0, row_bitrix[0]);
                                                 d.Add(1, row_vodoparad[1].Replace(',', '.'));
-                                                d.Add(2, "");
+                                                d.Add(2, "0");
                                                 for_save.data.Add(d);
                                                 log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Записываем новую цену продажи " + row_vodoparad[1].Replace(',', '.') + ". URL водопарада: " + row_vodoparad[4]);
                                                 break;
                                             }//конец если URL водопарада совпадают
                                         }//конец для всех позиций с файла цен водопарада
+                                        */
                                     }
                                 }//конец если для позиции стоит статус "обновлять цены"
                                 else
@@ -317,9 +379,15 @@ namespace ЗагрузкаЦенНаСайт
                                 {
                                     log.WriteMessage("ID Элемента: " + row_bitrix[0] + " Информация по ценам из источников НЕ НАЙДЕНА. Ставлю цену 0");
                                     Dictionary<int, string> d = new Dictionary<int, string>();
+
                                     d.Add(0, row_bitrix[0]);
                                     d.Add(1, "0");
-                                    d.Add(2, "");
+                                    d.Add(2, "0");
+                                    d.Add(3, "0");
+                                    d.Add(4, "0");
+                                    d.Add(5, "0");
+                                    d.Add(6, "");
+                                    d.Add(7, "Нет");
                                     for_save.data.Add(d);
                                 }
                             }//конец для каждой позиции с сайта
@@ -368,13 +436,13 @@ namespace ЗагрузкаЦенНаСайт
                 }
                 //-------------------------------------------
             }
-            catch (Exception exc)
+            /*catch (Exception exc)
             {
                 log.WriteError(exc.Message);
                 Console.WriteLine();
                 Console.ReadLine();
                 return;
-            }
+            }*/
             //zapromo.ru
             //-------------------------------------------
         }
